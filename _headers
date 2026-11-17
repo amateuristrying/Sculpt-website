@@ -1,0 +1,33 @@
+# Cloudflare Pages response headers — https://developers.cloudflare.com/pages/configuration/headers/
+#
+# The three sha256 values in Content-Security-Policy match the inline <script>, importmap
+# and <style> blocks in index.html <head>. If you edit any of those blocks, recompute the
+# hashes (see README) or the page will stop animating.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'sha256-QMBfRNc1yK1uVc2fpNc2LQgLVfUOZ98RF1Kx99ydFFk=' 'sha256-7HAzeTQbdi4IbDPYbn9oaMmg288/HD1abs7r9XD3R8s='; style-src 'self' https://fonts.googleapis.com 'sha256-U/s2vpd9jsyr5P3rFC1WBIFML0OhnmGQkOjabQa7Hiw='; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+# Page: always check for a fresh copy (cheap 304 via ETag).
+/
+  Cache-Control: public, max-age=0, must-revalidate
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Code: filenames aren't versioned, so cache briefly and refresh in the background.
+/*.css
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+/*.js
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# Logo and result models/photos: cache for a week.
+# If you replace a file, give it a new name (e.g. horse-v2.glb) so visitors get the new one.
+/assets/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+/results/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400

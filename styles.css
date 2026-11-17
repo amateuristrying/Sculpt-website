@@ -143,7 +143,7 @@ h1 {
   letter-spacing: -.045em;
   font-weight: 500;
 }
-.hero h1 { max-width: 640px; }
+.hero h1 { max-width: none; } /* line breaks are set in the markup */
 h1 em, .tagline em, .section-head h2 em { color: var(--accent); }
 .lede { margin-top: 28px; max-width: 480px; font-size: clamp(16px, 1.5vw, 19px); color: var(--soft); line-height: 1.55; }
 .ctas { margin-top: 40px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
@@ -444,15 +444,19 @@ h1 em, .tagline em, .section-head h2 em { color: var(--accent); }
   .cards .card:last-child .card-stage { aspect-ratio: 16 / 10; }
   .specs-grid { grid-template-columns: 1fr; }
 }
-@media (max-width: 760px) {
-  .nav-links { display: none; }
+@media (max-width: 900px) {
+  /* Stacked hero: sculpture on top, copy below (matches main.js hero layout). */
   .hero { align-items: flex-end; padding: 0 0 48px; }
   .scroll-cue { display: none; }
   .hero-inner > * { max-width: 100%; }
+  .hero .lede { max-width: 560px; }
   .hero-vignette {
     background:
       linear-gradient(to top, var(--bg) 0%, rgba(10,12,13,.9) 42%, rgba(10,12,13,0) 66%);
   }
+}
+@media (max-width: 760px) {
+  .nav-links { display: none; }
   .stack { display: none; }
   .titlebar .title { font-size: 11px; }
   .app-window { height: min(56svh, 520px); min-height: 300px; }

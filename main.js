@@ -348,7 +348,7 @@ const hero = (() => {
     // Size of the visible plane at the sculpture's depth.
     const visH = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
     const visW = visH * aspect;
-    if (aspect < 0.9) {
+    if (w <= 900 || aspect < 0.9) { // keep in sync with the 900px hero breakpoint in styles.css
       // Phones / portrait: sculpture sits in the upper half, copy below it.
       const s = Math.min(visW * 0.5, visH * 0.24) / 4.8;
       group.scale.setScalar(s);

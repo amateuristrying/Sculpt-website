@@ -22,4 +22,13 @@ Everything you edit lives in `config.js`:
 
 ## Deploy
 
-Any static host works (Vercel, Netlify, Cloudflare Pages, GitHub Pages) — publish the repo root.
+Any static host works. On Cloudflare Pages: framework preset **None**, build command empty,
+output directory `/`. Keep each file under 25 MB (Pages limit) — host the DMG on GitHub Releases or R2.
+
+`_headers` adds caching and security headers on Cloudflare Pages. Its Content-Security-Policy
+allows the three inline blocks in `index.html` `<head>` by hash. If you edit any of them,
+print the new hashes and paste them into `_headers`:
+
+```sh
+python3 -c "import re,hashlib,base64;h=open('index.html').read();[print(base64.b64encode(hashlib.sha256(b.encode()).digest()).decode()) for a,b in re.findall(r'<(?:script|style)([^>]*)>(.*?)</(?:script|style)>',h,re.S) if 'src=' not in a]"
+```
