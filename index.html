@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sculpt — Image to 3D, on your Mac</title>
+  <meta name="description" content="Turn a single photo into a textured 3D asset, entirely on your Mac. Generate, refine, texture and export GLB, glTF, OBJ or STL. No uploads, no accounts, no credits.">
+  <meta name="theme-color" content="#0b0d0e">
+  <meta property="og:title" content="Sculpt — Image to 3D, on your Mac">
+  <meta property="og:description" content="Generate, refine, texture and export 3D assets locally. Your hardware. Your files. Your inference.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    // Hide animated text until GSAP has split it; never leave it hidden if scripts fail.
+    document.documentElement.classList.add('js');
+    setTimeout(function () { document.documentElement.classList.add('ready'); }, 3500);
+  </script>
+  <style>.js:not(.ready) .hero-inner, .js:not(.ready) .nav { visibility: hidden; }</style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- ── Nav ─────────────────────────────────────────── -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Sculpt home">
+        <svg class="mark" viewBox="2 2 28 32" aria-hidden="true"><path d="M28 3H12L3 17h15L28 3Z"/><path d="M4 33h16l9-14H14L4 33Z" opacity=".64"/></svg>
+        <span>Sculpt</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#how">How it works</a>
+        <a href="#results">Results</a>
+        <a href="#specs">Requirements</a>
+        <a data-link="repo" href="https://github.com/amateuristrying/Sculpt">GitHub</a>
+      </nav>
+      <a class="btn btn-sm btn-primary" data-link="mac" href="https://github.com/amateuristrying/Sculpt/releases/latest">
+        <svg class="apple" viewBox="0 0 17 20" aria-hidden="true"><path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9C3.6 4.8 2 5.8 1.1 7.4c-1.9 3.2-.5 8 1.3 10.6.9 1.3 2 2.7 3.4 2.6 1.3-.1 1.9-.9 3.5-.9s2.1.9 3.5.8c1.4 0 2.3-1.3 3.2-2.6 1-1.5 1.4-2.9 1.4-3-.1 0-2.8-1.1-2.8-4.3ZM11.5 3c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5Z"/></svg>
+        Download
+      </a>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ── Hero ────────────────────────────────────────── -->
+    <section class="hero">
+      <canvas id="heroCanvas" aria-hidden="true"></canvas>
+      <div class="hero-vignette" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <h1 class="reveal">Turn an image into a 3D&nbsp;asset.<br><em>On your Mac.</em></h1>
+        <p class="lede reveal">Generate, refine, texture and export — entirely on your own machine. No uploads, no accounts, no credits.</p>
+        <div class="ctas reveal">
+          <a class="btn btn-primary btn-lg" data-link="mac" href="https://github.com/amateuristrying/Sculpt/releases/latest">
+            <svg class="apple" viewBox="0 0 17 20" aria-hidden="true"><path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9C3.6 4.8 2 5.8 1.1 7.4c-1.9 3.2-.5 8 1.3 10.6.9 1.3 2 2.7 3.4 2.6 1.3-.1 1.9-.9 3.5-.9s2.1.9 3.5.8c1.4 0 2.3-1.3 3.2-2.6 1-1.5 1.4-2.9 1.4-3-.1 0-2.8-1.1-2.8-4.3ZM11.5 3c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5Z"/></svg>
+            <span>Download Mac Beta <small>Apple Silicon</small></span>
+          </a>
+          <a class="btn btn-ghost btn-lg" data-link="windows" href="https://github.com/amateuristrying/Sculpt/releases">
+            <svg class="win" viewBox="0 0 16 16" aria-hidden="true"><path d="M0 2.2 6.5 1.3v6.2H0V2.2Zm7.3-1L16 0v7.5H7.3V1.2ZM0 8.3h6.5v6.3L0 13.7V8.3Zm7.3 0H16V16l-8.7-1.2V8.3Z"/></svg>
+            <span>Windows <small>Coming soon</small></span>
+          </a>
+        </div>
+        <p class="meta reveal"><span data-version>v0.1.0</span> beta <i>·</i> 16&nbsp;GB memory minimum <i>·</i> 5&nbsp;GB for the local engine</p>
+      </div>
+      <span class="scroll-cue" aria-hidden="true"><i></i>Scroll</span>
+    </section>
+
+    <!-- ── How it works (scroll-driven) ────────────────── -->
+    <section class="story" id="how" aria-label="How Sculpt turns an image into a 3D asset">
+      <div class="story-sticky">
+        <div class="app-window">
+          <div class="titlebar">
+            <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="title">ceramic-vase.jpg <b>— Sculpt</b></span>
+            <span class="step-count mono"><span id="stepNum">01</span> / 05</span>
+          </div>
+          <div class="app-body">
+            <ol class="stack" id="stack">
+              <li data-step="0"><span class="node">1</span><span class="copy"><strong>Source</strong><span>ceramic-vase.jpg</span></span></li>
+              <li data-step="1"><span class="node">2</span><span class="copy"><strong>Foreground</strong><span>Mask + brush fixes</span></span></li>
+              <li data-step="2"><span class="node">3</span><span class="copy"><strong>Reconstruct</strong><span>TripoSR · Metal</span></span></li>
+              <li data-step="3"><span class="node">4</span><span class="copy"><strong>Refine</strong><span>Cleanup · smoothing</span></span></li>
+              <li data-step="4"><span class="node">5</span><span class="copy"><strong>Texture &amp; export</strong><span>Color bake · GLB</span></span></li>
+            </ol>
+            <div class="viewport" id="viewport">
+              <div class="layer photo" id="photoLayer" aria-hidden="true"></div>
+              <div class="layer checker" id="checkerLayer" aria-hidden="true"></div>
+              <canvas id="pipeline" aria-label="Animated demonstration: a photo of a vase becomes a 3D model"></canvas>
+              <div class="vp-tag mono" id="vpTag">Source image</div>
+              <div class="exports" id="exports" aria-hidden="true">
+                <span>GLB</span><span>glTF</span><span>OBJ</span><span>STL</span>
+              </div>
+            </div>
+          </div>
+          <div class="statusbar mono">
+            <span><i class="live"></i>LOCAL <em>/</em> METAL<span class="hide-sm"> <em>/</em> APPLE SILICON</span></span>
+            <span id="viewMode">View: Image</span>
+          </div>
+        </div>
+
+        <div class="captions" aria-live="polite">
+          <div class="cap" data-cap="0"><p class="eyebrow mono">01 — Source</p><h2>Start with one photo.</h2><p>Drop a PNG, JPG or WEBP of a single object. The original stays in your local library.</p></div>
+          <div class="cap" data-cap="1"><p class="eyebrow mono">02 — Foreground</p><h2>Isolate the object.</h2><p>Preview the mask before anything runs. Paint to add or erase wherever it guessed wrong.</p></div>
+          <div class="cap" data-cap="2"><p class="eyebrow mono">03 — Reconstruct</p><h2>Lift it into 3D.</h2><p>TripoSR infers the full shape on your Mac's GPU through Metal — including the sides the camera never saw.</p></div>
+          <div class="cap" data-cap="3"><p class="eyebrow mono">04 — Refine</p><h2>Clean up the geometry.</h2><p>Re-extract at higher detail, drop stray fragments and smooth the surface — without running the model again.</p></div>
+          <div class="cap" data-cap="4"><p class="eyebrow mono">05 — Texture &amp; export</p><h2>Bake it. Ship it.</h2><p>Bake a 1K or 2K color texture, then export GLB, glTF, OBJ, or STL at a real-world size.</p></div>
+        </div>
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+      </div>
+    </section>
+
+    <!-- ── Results ─────────────────────────────────────── -->
+    <section class="section results" id="results">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow mono">Results</p>
+          <h2>Straight out of Sculpt.</h2>
+          <p class="sub">Drag to turn them. Switch views the way you would in the app.</p>
+        </div>
+        <div class="cards" id="cards"></div>
+      </div>
+    </section>
+
+    <!-- ── Principles ──────────────────────────────────── -->
+    <section class="section principles">
+      <div class="wrap">
+        <div class="trio">
+          <article class="reveal">
+            <span class="num mono">01</span>
+            <h3>On-device</h3>
+            <p>Reconstruction runs on Apple Silicon through Metal. After the one-time engine install, Sculpt works offline.</p>
+          </article>
+          <article class="reveal">
+            <span class="num mono">02</span>
+            <h3>No account. No quota.</h3>
+            <p>No sign-in, no credits, no uploads. Every source, mask and model stays in your library, on your disk.</p>
+          </article>
+          <article class="reveal">
+            <span class="num mono">03</span>
+            <h3>Fits your pipeline</h3>
+            <p>Embedded glTF and GLB with baked color, OBJ with materials, or STL at an exact height in millimetres.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Requirements + honesty ──────────────────────── -->
+    <section class="section specs" id="specs">
+      <div class="wrap specs-grid">
+        <div class="reveal">
+          <p class="eyebrow mono">Requirements</p>
+          <h2>Before you download.</h2>
+          <dl class="spec-list">
+            <div><dt>Mac</dt><dd>Apple Silicon<span>Tested on M4 MacBook Air</span></dd></div>
+            <div><dt>Memory</dt><dd>16 GB minimum<span>24 GB+ for High detail</span></dd></div>
+            <div><dt>Storage</dt><dd>5 GB free<span>For the local engine and models</span></dd></div>
+            <div><dt>Network</dt><dd>First setup only<span>Generation runs offline after</span></dd></div>
+            <div><dt>Price</dt><dd>Free<span>MIT-licensed source</span></dd></div>
+          </dl>
+          <p class="note"><b>Beta builds aren't notarized yet.</b> If macOS blocks the first launch, try opening Sculpt once, then go to System&nbsp;Settings → Privacy&nbsp;&amp;&nbsp;Security → <i>Open Anyway</i>.</p>
+        </div>
+        <div class="reveal honest">
+          <p class="eyebrow mono">Honest beta</p>
+          <h2>What to expect.</h2>
+          <div class="fit">
+            <div>
+              <h4><span class="ok"></span>Works best with</h4>
+              <ul>
+                <li>One clear object per photo</li>
+                <li>A plain, uncluttered background</li>
+                <li>Even light, the whole object in frame</li>
+                <li>Solid forms — vases, toys, props, figures</li>
+              </ul>
+            </div>
+            <div>
+              <h4><span class="warn"></span>Still hard</h4>
+              <ul>
+                <li>Thin parts like straps, wires and leaves</li>
+                <li>Hidden backs the photo can't show</li>
+                <li>Busy scenes with several objects</li>
+                <li>Game-ready topology out of the box</li>
+              </ul>
+            </div>
+          </div>
+          <p class="note">We'd rather you know now. Every beta report makes the next engine better — <a data-link="feedback" href="https://github.com/amateuristrying/Sculpt/issues/new">tell us what broke</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Final ───────────────────────────────────────── -->
+    <section class="final">
+      <div class="final-glow" aria-hidden="true"></div>
+      <div class="wrap">
+        <h2 class="tagline">
+          <span class="reveal">Your hardware.</span>
+          <span class="reveal">Your files.</span>
+          <span class="reveal"><em>Your inference.</em></span>
+        </h2>
+        <div class="ctas reveal">
+          <a class="btn btn-primary btn-lg" data-link="mac" href="https://github.com/amateuristrying/Sculpt/releases/latest">
+            <svg class="apple" viewBox="0 0 17 20" aria-hidden="true"><path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9C3.6 4.8 2 5.8 1.1 7.4c-1.9 3.2-.5 8 1.3 10.6.9 1.3 2 2.7 3.4 2.6 1.3-.1 1.9-.9 3.5-.9s2.1.9 3.5.8c1.4 0 2.3-1.3 3.2-2.6 1-1.5 1.4-2.9 1.4-3-.1 0-2.8-1.1-2.8-4.3ZM11.5 3c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5Z"/></svg>
+            <span>Download Mac Beta <small>Apple Silicon</small></span>
+          </a>
+          <a class="btn btn-ghost btn-lg" data-link="windows" href="https://github.com/amateuristrying/Sculpt/releases">
+            <svg class="win" viewBox="0 0 16 16" aria-hidden="true"><path d="M0 2.2 6.5 1.3v6.2H0V2.2Zm7.3-1L16 0v7.5H7.3V1.2ZM0 8.3h6.5v6.3L0 13.7V8.3Zm7.3 0H16V16l-8.7-1.2V8.3Z"/></svg>
+            <span>Windows <small>Coming soon</small></span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <a class="brand" href="#top" aria-label="Sculpt home">
+        <svg class="mark" viewBox="2 2 28 32" aria-hidden="true"><path d="M28 3H12L3 17h15L28 3Z"/><path d="M4 33h16l9-14H14L4 33Z" opacity=".64"/></svg>
+        <span>Sculpt</span>
+      </a>
+      <nav aria-label="Footer">
+        <a data-link="repo" href="https://github.com/amateuristrying/Sculpt">GitHub</a>
+        <a data-link="feedback" href="https://github.com/amateuristrying/Sculpt/issues/new">Feedback</a>
+        <a data-link="license" href="https://github.com/amateuristrying/Sculpt/blob/main/LICENSE">MIT License</a>
+      </nav>
+      <p class="mono">© 2026 Sculpt. Model weights keep their own licenses.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
